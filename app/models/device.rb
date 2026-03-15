@@ -15,6 +15,9 @@ class Device < ApplicationRecord
     subclass.instance_variable_set(:@_model_name, ActiveModel::Name.new(Device))
   end
 
+  belongs_to :parent_device, class_name: "Device", optional: true
+  has_many :child_devices, class_name: "Device", foreign_key: :parent_device_id, dependent: :nullify
+
   validates :name, presence: true
   validates :type, inclusion: { in: TYPES }
   validates :status, inclusion: { in: STATUSES }

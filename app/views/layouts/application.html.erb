@@ -21,6 +21,8 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 
     <%# Apply saved theme before paint to avoid flash %>
     <script>
@@ -33,7 +35,14 @@
   <body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
     <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div class="max-w-6xl mx-auto flex items-center justify-between">
-        <%= link_to "Device Inventory", root_path, class: "text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" %>
+        <div class="flex items-center gap-6">
+          <%= link_to "Device Inventory", root_path, class: "text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" %>
+          <nav class="flex items-center gap-1">
+            <%= link_to "Devices", root_path, class: "text-sm font-medium px-3 py-1.5 rounded-lg transition-colors #{request.path == '/' || request.path.start_with?('/devices') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+            <%= link_to "Dashboard", dashboard_path, class: "text-sm font-medium px-3 py-1.5 rounded-lg transition-colors #{request.path == '/dashboard' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+            <%= link_to "Topology", topology_path, class: "text-sm font-medium px-3 py-1.5 rounded-lg transition-colors #{request.path == '/topology' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+          </nav>
+        </div>
         <button data-controller="theme" data-action="click->theme#toggle"
           class="text-xl w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
           aria-label="Toggle theme">

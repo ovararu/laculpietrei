@@ -1,0 +1,117 @@
+wb = xlsx_package.workbook
+
+date_format = "DD/MM/YYYY"
+
+header_style = wb.styles.add_style(
+  bg_color: "1D4ED8",
+  fg_color: "FFFFFF",
+  b: true,
+  sz: 11,
+  alignment: { horizontal: :center, vertical: :center, wrap_text: true },
+  border: { style: :thin, color: "BFDBFE" }
+)
+
+cell_style = wb.styles.add_style(
+  sz: 10,
+  alignment: { vertical: :center, wrap_text: true },
+  border: { style: :thin, color: "E5E7EB" }
+)
+
+cell_date_style = wb.styles.add_style(
+  sz: 10,
+  format_code: date_format,
+  alignment: { vertical: :center },
+  border: { style: :thin, color: "E5E7EB" }
+)
+
+alt_cell_style = wb.styles.add_style(
+  bg_color: "F9FAFB",
+  sz: 10,
+  alignment: { vertical: :center, wrap_text: true },
+  border: { style: :thin, color: "E5E7EB" }
+)
+
+alt_cell_date_style = wb.styles.add_style(
+  bg_color: "F9FAFB",
+  sz: 10,
+  format_code: date_format,
+  alignment: { vertical: :center },
+  border: { style: :thin, color: "E5E7EB" }
+)
+
+status_active_style = wb.styles.add_style(
+  fg_color: "166534",
+  bg_color: "DCFCE7",
+  sz: 10,
+  alignment: { horizontal: :center, vertical: :center },
+  border: { style: :thin, color: "E5E7EB" }
+)
+
+status_inactive_style = wb.styles.add_style(
+  fg_color: "991B1B",
+  bg_color: "FEE2E2",
+  sz: 10,
+  alignment: { horizontal: :center, vertical: :center },
+  border: { style: :thin, color: "E5E7EB" }
+)
+
+status_maintenance_style = wb.styles.add_style(
+  fg_color: "92400E",
+  bg_color: "FEF3C7",
+  sz: 10,
+  alignment: { horizontal: :center, vertical: :center },
+  border: { style: :thin, color: "E5E7EB" }
+)
+
+status_styles = {
+  "active"      => status_active_style,
+  "inactive"    => status_inactive_style,
+  "maintenance" => status_maintenance_style
+}
+
+sheet_name = @current_type ? Device::TYPE_LABELS[@current_type] : "All Devices"
+
+wb.add_worksheet(name: sheet_name) do |sheet|
+  sheet.add_row(
+    [ "Name", "Type", "Brand", "Model", "Serial Number",
+      "IP Address", "MAC Address", "Location", "Status",
+      "Purchased", "Warranty Expires", "Notes" ],
+    style: header_style,
+    height: 20
+  )
+
+  @devices.each_with_index do |device, index|
+    base_style      = index.even? ? cell_style      : alt_cell_style
+    base_date_style = index.even? ? cell_date_style : alt_cell_date_style
+
+    row_styles = Array.new(12, base_style)
+    row_styles[8]  = status_styles.fetch(device.status, base_style)
+    row_styles[9]  = base_date_style
+    row_styles[10] = base_date_style
+
+    sheet.add_row(
+      [
+        device.name,
+        device.type_label,
+        device.brand,
+        device.model_number,
+        device.serial_number,
+        device.ip_address,
+        device.mac_address,
+        device.location,
+        device.status&.capitalize,
+        device.purchased_at,
+        device.warranty_expires_at,
+        device.notes
+      ],
+      style: row_styles,
+      height: 16,
+      types: [ :string, :string, :string, :string, :string,
+               :string, :string, :string, :string,
+               :date, :date,
+               :string ]
+    )
+  end
+
+  sheet.column_widths 30, 12, 16, 20, 18, 16, 20, 22, 14, 14, 16, 30
+end

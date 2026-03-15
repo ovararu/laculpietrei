@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_15_021652) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_15_031317) do
   create_table "devices", force: :cascade do |t|
     t.string "brand"
     t.datetime "created_at", null: false
@@ -20,12 +20,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_15_021652) do
     t.string "model_number"
     t.string "name", null: false
     t.text "notes"
+    t.integer "parent_device_id"
     t.date "purchased_at"
     t.string "serial_number"
     t.string "status", default: "active"
     t.string "type", null: false
     t.datetime "updated_at", null: false
     t.date "warranty_expires_at"
+    t.index ["parent_device_id"], name: "index_devices_on_parent_device_id"
     t.index ["status"], name: "index_devices_on_status"
     t.index ["type"], name: "index_devices_on_type"
   end

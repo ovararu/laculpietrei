@@ -2,6 +2,38 @@ require "test_helper"
 
 class DevicesControllerTest < ActionDispatch::IntegrationTest
   # ---------------------------------------------------------------------------
+  # GET /devices.xlsx (export)
+  # ---------------------------------------------------------------------------
+
+  test "xlsx export returns 200 with correct content type" do
+    get devices_path(format: :xlsx)
+    assert_response :success
+    assert_includes response.content_type, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  end
+
+  test "xlsx export sets attachment content-disposition with default filename" do
+    get devices_path(format: :xlsx)
+    assert_includes response.headers["Content-Disposition"], "devices.xlsx"
+  end
+
+  test "xlsx export with type filter uses typed filename" do
+    get devices_path(format: :xlsx, type: "Camera")
+    assert_includes response.headers["Content-Disposition"], "devices_camera.xlsx"
+  end
+
+  test "xlsx export response body is non-empty" do
+    get devices_path(format: :xlsx)
+    assert response.body.length > 0
+  end
+
+  test "xlsx export with type filter still returns 200" do
+    Device::TYPES.each do |type|
+      get devices_path(format: :xlsx, type: type)
+      assert_response :success, "Expected xlsx export for type #{type} to succeed"
+    end
+  end
+
+  # ---------------------------------------------------------------------------
   # GET /devices (index)
   # ---------------------------------------------------------------------------
 

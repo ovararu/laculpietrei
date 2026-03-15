@@ -1,3 +1,5 @@
+# Create all devices first, then wire up connections below.
+
 Camera.find_or_create_by!(name: "Camera - Entrance") do |d|
   d.brand = "Hikvision"
   d.model_number = "DS-2CD2143G2-I"
@@ -92,3 +94,26 @@ Server.find_or_create_by!(name: "File Server") do |d|
   d.purchased_at = "2023-01-20"
   d.warranty_expires_at = "2028-01-20"
 end
+
+# Wire up topology connections
+# Main Router (top-level, no parent)
+#   └── Core Switch
+#         ├── Camera - Entrance
+#         ├── Camera - Parking
+#         ├── Reception PC
+#         └── File Server
+#   └── Floor 2 Switch
+#         └── Accounting PC
+
+router       = Router.find_by!(name: "Main Router")
+core_switch  = Switch.find_by!(name: "Core Switch")
+floor_switch = Switch.find_by!(name: "Floor 2 Switch")
+
+core_switch.update!(parent_device: router)
+floor_switch.update!(parent_device: router)
+
+Camera.find_by!(name: "Camera - Entrance").update!(parent_device: core_switch)
+Camera.find_by!(name: "Camera - Parking").update!(parent_device: core_switch)
+Pc.find_by!(name: "Reception PC").update!(parent_device: core_switch)
+Server.find_by!(name: "File Server").update!(parent_device: core_switch)
+Pc.find_by!(name: "Accounting PC").update!(parent_device: floor_switch)

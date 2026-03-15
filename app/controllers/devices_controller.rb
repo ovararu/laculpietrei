@@ -8,6 +8,14 @@ class DevicesController < ApplicationController
       Device.all.order(:name)
     end
     @current_type = params[:type]
+
+    respond_to do |format|
+      format.html
+      format.xlsx do
+        filename = @current_type ? "devices_#{@current_type.downcase}.xlsx" : "devices.xlsx"
+        response.headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
+      end
+    end
   end
 
   def show
@@ -59,7 +67,7 @@ class DevicesController < ApplicationController
     params.expect(device: [
       :type, :name, :brand, :model_number, :serial_number,
       :ip_address, :mac_address, :location, :status,
-      :notes, :purchased_at, :warranty_expires_at
+      :notes, :purchased_at, :warranty_expires_at, :parent_device_id
     ])
   end
 end
