@@ -1,0 +1,85 @@
+<%= form_with model: device, class: "space-y-5" do |f| %>
+  <% if device.errors.any? %>
+    <div class="bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+      <p class="text-sm font-medium text-red-700 mb-1"><%= pluralize(device.errors.count, "error") %> prevented this device from being saved:</p>
+      <ul class="list-disc list-inside text-sm text-red-600 space-y-0.5">
+        <% device.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div>
+      <%= f.label :type, "Device Type", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.select :type,
+        Device::TYPES.map { |t| [Device::TYPE_LABELS[t], t] },
+        { include_blank: "Select type..." },
+        class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+    </div>
+
+    <div>
+      <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :name, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "e.g. Camera entrance" %>
+    </div>
+
+    <div>
+      <%= f.label :brand, class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :brand, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "e.g. Cisco, Hikvision" %>
+    </div>
+
+    <div>
+      <%= f.label :model_number, "Model", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :model_number, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "e.g. DS-2CD2143G2-I" %>
+    </div>
+
+    <div>
+      <%= f.label :serial_number, "Serial Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :serial_number, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+    </div>
+
+    <div>
+      <%= f.label :ip_address, "IP Address", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :ip_address, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "e.g. 192.168.1.100" %>
+    </div>
+
+    <div>
+      <%= f.label :mac_address, "MAC Address", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :mac_address, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "e.g. AA:BB:CC:DD:EE:FF" %>
+    </div>
+
+    <div>
+      <%= f.label :location, class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :location, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "e.g. Server Room, Floor 2" %>
+    </div>
+
+    <div>
+      <%= f.label :status, class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.select :status,
+        Device::STATUSES.map { |s| [s.capitalize, s] },
+        {},
+        class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+    </div>
+
+    <div>
+      <%= f.label :purchased_at, "Purchase Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.date_field :purchased_at, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+    </div>
+
+    <div>
+      <%= f.label :warranty_expires_at, "Warranty Expires", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.date_field :warranty_expires_at, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :notes, class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.text_area :notes, rows: 3, class: "block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "Any additional notes..." %>
+  </div>
+
+  <div class="flex gap-3 pt-2">
+    <%= f.submit class: "bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2 rounded-lg transition-colors cursor-pointer" %>
+    <%= link_to "Cancel", devices_path, class: "text-sm text-gray-500 hover:text-gray-700 px-3 py-2" %>
+  </div>
+<% end %>

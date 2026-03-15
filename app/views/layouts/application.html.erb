@@ -23,7 +23,23 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white border-b border-gray-200 px-6 py-4">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <%= link_to "Device Inventory", root_path, class: "text-lg font-bold text-gray-900 hover:text-blue-600 transition-colors" %>
+      </div>
+    </nav>
+
+    <% if notice.present? %>
+      <div class="max-w-6xl mx-auto px-6 pt-4">
+        <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg">
+          <%= notice %>
+        </div>
+      </div>
+    <% end %>
+
+    <main class="max-w-6xl mx-auto px-6 py-8">
+      <%= yield %>
+    </main>
   </body>
 </html>

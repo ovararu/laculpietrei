@@ -1,0 +1,1 @@
+class Pc < Device; end

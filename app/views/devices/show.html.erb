@@ -1,0 +1,50 @@
+<% content_for :title, @device.name %>
+
+<div class="max-w-2xl">
+  <div class="flex items-center gap-3 mb-6">
+    <%= link_to "← Back to devices", devices_path, class: "text-sm text-gray-500 hover:text-blue-600" %>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900"><%= @device.name %></h1>
+        <p class="text-sm text-gray-500 mt-0.5"><%= @device.type_label %></p>
+      </div>
+      <%= render "status_badge", status: @device.status %>
+    </div>
+
+    <dl class="divide-y divide-gray-100">
+      <% {
+        "Brand" => @device.brand,
+        "Model" => @device.model_number,
+        "Serial Number" => @device.serial_number,
+        "IP Address" => @device.ip_address,
+        "MAC Address" => @device.mac_address,
+        "Location" => @device.location,
+        "Purchased" => (@device.purchased_at&.strftime("%d %b %Y")),
+        "Warranty Expires" => (@device.warranty_expires_at&.strftime("%d %b %Y")),
+      }.each do |label, value| %>
+        <% next if value.blank? %>
+        <div class="px-6 py-3 flex">
+          <dt class="text-sm font-medium text-gray-500 w-40 shrink-0"><%= label %></dt>
+          <dd class="text-sm text-gray-900 font-mono"><%= value %></dd>
+        </div>
+      <% end %>
+
+      <% if @device.notes.present? %>
+        <div class="px-6 py-3">
+          <dt class="text-sm font-medium text-gray-500 mb-1">Notes</dt>
+          <dd class="text-sm text-gray-900 whitespace-pre-wrap"><%= @device.notes %></dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+
+  <div class="flex gap-3 mt-4">
+    <%= link_to "Edit", edit_device_path(@device), class: "bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors" %>
+    <%= button_to "Delete", device_path(@device), method: :delete,
+      class: "bg-red-50 hover:bg-red-100 text-red-600 text-sm font-medium px-4 py-2 rounded-lg transition-colors border-0 cursor-pointer",
+      data: { turbo_confirm: "Delete #{@device.name}?" } %>
+  </div>
+</div>

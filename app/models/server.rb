@@ -1,0 +1,1 @@
+class Server < Device; end
