@@ -1,0 +1,68 @@
+camera_entrance:
+  type: Camera
+  name: Camera - Entrance
+  brand: Hikvision
+  model_number: DS-2CD2143G2-I
+  serial_number: SN-CAM-001
+  ip_address: 192.168.1.101
+  mac_address: AA:BB:CC:01:01:01
+  location: Main Entrance
+  status: active
+  purchased_at: 2023-06-15
+  warranty_expires_at: 2026-06-15
+
+camera_parking:
+  type: Camera
+  name: Camera - Parking
+  brand: Dahua
+  model_number: IPC-HDW2831T-AS
+  serial_number: SN-CAM-002
+  ip_address: 192.168.1.102
+  mac_address: AA:BB:CC:01:01:02
+  location: Parking Lot
+  status: inactive
+
+core_switch:
+  type: Switch
+  name: Core Switch
+  brand: Cisco
+  model_number: Catalyst 2960-X
+  serial_number: SN-SW-001
+  ip_address: 192.168.1.2
+  mac_address: AA:BB:CC:02:01:01
+  location: Server Room
+  status: active
+
+main_router:
+  type: Router
+  name: Main Router
+  brand: MikroTik
+  model_number: RB4011iGS+RM
+  serial_number: SN-RT-001
+  ip_address: 192.168.1.1
+  mac_address: AA:BB:CC:03:01:01
+  location: Server Room
+  status: active
+
+reception_pc:
+  type: Pc
+  name: Reception PC
+  brand: Dell
+  model_number: OptiPlex 7090
+  serial_number: SN-PC-001
+  ip_address: 192.168.1.50
+  mac_address: AA:BB:CC:04:01:01
+  location: Reception
+  status: active
+
+file_server:
+  type: Server
+  name: File Server
+  brand: Dell
+  model_number: PowerEdge R750
+  serial_number: SN-SRV-001
+  ip_address: 192.168.1.10
+  mac_address: AA:BB:CC:05:01:01
+  location: Server Room, Rack 1
+  status: maintenance
+  notes: Scheduled for upgrade

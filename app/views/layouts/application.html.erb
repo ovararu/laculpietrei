@@ -21,18 +21,29 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <%# Apply saved theme before paint to avoid flash %>
+    <script>
+      if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
   </head>
 
-  <body class="bg-gray-50 min-h-screen">
-    <nav class="bg-white border-b border-gray-200 px-6 py-4">
+  <body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors">
+    <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
       <div class="max-w-6xl mx-auto flex items-center justify-between">
-        <%= link_to "Device Inventory", root_path, class: "text-lg font-bold text-gray-900 hover:text-blue-600 transition-colors" %>
+        <%= link_to "Device Inventory", root_path, class: "text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors" %>
+        <button data-controller="theme" data-action="click->theme#toggle"
+          class="text-xl w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+          aria-label="Toggle theme">
+        </button>
       </div>
     </nav>
 
     <% if notice.present? %>
       <div class="max-w-6xl mx-auto px-6 pt-4">
-        <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-lg">
+        <div class="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 text-green-700 dark:text-green-400 text-sm px-4 py-3 rounded-lg">
           <%= notice %>
         </div>
       </div>
