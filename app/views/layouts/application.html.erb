@@ -42,6 +42,7 @@
             <%= link_to "Dashboard", dashboard_path, class: "text-sm font-medium px-3 py-1.5 rounded-lg transition-colors #{request.path == '/dashboard' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
             <%= link_to "Topology", topology_path, class: "text-sm font-medium px-3 py-1.5 rounded-lg transition-colors #{request.path == '/topology' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
             <%= link_to "Interventions", interventions_path, class: "text-sm font-medium px-3 py-1.5 rounded-lg transition-colors #{request.path.start_with?('/interventions') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+            <%= link_to "Billing", billing_path, class: "text-sm font-medium px-3 py-1.5 rounded-lg transition-colors #{request.path.start_with?('/billing') ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
           </nav>
         </div>
         <button data-controller="theme" data-action="click->theme#toggle"

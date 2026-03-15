@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   end
   resources :interventions
 
+  get "billing", to: "billing#index"
   get "dashboard", to: "dashboard#index"
   get "topology", to: "topology#index"
   get "topology/graph_data", to: "topology#graph_data"

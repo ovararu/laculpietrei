@@ -31,6 +31,12 @@
           <dd class="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @intervention.parts_replaced %></dd>
         </div>
       <% end %>
+      <% if @intervention.duration_formatted %>
+        <div class="px-6 py-3 flex">
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 w-40 shrink-0">Duration</dt>
+          <dd class="text-sm text-gray-900 dark:text-gray-100 font-medium"><%= @intervention.duration_formatted %></dd>
+        </div>
+      <% end %>
       <div class="px-6 py-3 flex">
         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 w-40 shrink-0">Recorded</dt>
         <dd class="text-sm text-gray-500 dark:text-gray-400"><%= @intervention.created_at.strftime("%d %b %Y %H:%M") %></dd>

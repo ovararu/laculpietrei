@@ -32,4 +32,17 @@ class Intervention < ApplicationRecord
   def type_color
     TYPE_COLORS.fetch(intervention_type, "bg-gray-100 text-gray-700")
   end
+
+  def duration_formatted
+    return nil unless duration_minutes.present? && duration_minutes > 0
+    h = duration_minutes / 60
+    m = duration_minutes % 60
+    if m == 0
+      "#{h}h"
+    elsif h == 0
+      "#{m}min"
+    else
+      "#{h}h #{m}min"
+    end
+  end
 end

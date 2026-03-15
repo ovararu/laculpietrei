@@ -10,6 +10,14 @@ class InterventionsController < ApplicationController
       Intervention.all
     end
     @interventions = @interventions.includes(:device)
+
+    respond_to do |format|
+      format.html
+      format.xlsx do
+        filename = @device ? "interventions_#{@device.name.parameterize}.xlsx" : "interventions.xlsx"
+        response.headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
+      end
+    end
   end
 
   def show
@@ -63,7 +71,7 @@ class InterventionsController < ApplicationController
 
   def intervention_params
     params.expect(intervention: [
-      :device_id, :intervened_at, :intervention_type, :description, :parts_replaced
+      :device_id, :intervened_at, :intervention_type, :description, :parts_replaced, :duration_minutes
     ])
   end
 end
