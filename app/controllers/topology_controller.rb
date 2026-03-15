@@ -22,11 +22,11 @@ class TopologyController < ApplicationController
       border = status_border[d.status] || colors[:border]
       {
         id: d.id,
-        label: d.name,
+        label: d.ip_address.present? ? "#{d.name}\n#{d.ip_address}" : d.name,
         title: "#{d.type_label} | #{d.status}#{d.ip_address.present? ? "\n#{d.ip_address}" : ""}#{d.location.present? ? "\n#{d.location}" : ""}",
         group: d.type,
         color: { background: colors[:background], border: border, highlight: { background: colors[:background], border: "#1E40AF" } },
-        font: { color: "#FFFFFF", size: 12 },
+        font: { color: "#FFFFFF", size: 13, multi: "html", bold: { size: 13 } },
         borderWidth: d.status == "active" ? 2 : 3,
         borderDashes: d.status == "inactive" ? [ 5, 5 ] : false,
         shape: shape_for(d.type)
