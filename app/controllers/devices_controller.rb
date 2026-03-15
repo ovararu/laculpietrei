@@ -22,19 +22,15 @@ class DevicesController < ApplicationController
   end
 
   def new
-    if params[:type].present? && Device::TYPES.include?(params[:type])
-      @device = params[:type].constantize.new
-    else
-      @device = Device.new
-    end
+    klass = device_class_from(params[:type])
+    @device = klass.new
   end
 
   def edit
   end
 
   def create
-    type = device_params[:type]
-    klass = Device::TYPES.include?(type) ? type.constantize : Device
+    klass = device_class_from(device_params[:type])
     @device = klass.new(device_params.except(:type))
 
     if @device.save
@@ -66,6 +62,15 @@ class DevicesController < ApplicationController
 
   def set_device
     @device = Device.find(params[:id])
+  end
+
+  DEVICE_CLASSES = {
+    "Camera" => Camera, "Switch" => Switch, "Router" => Router,
+    "Pc" => Pc, "Server" => Server
+  }.freeze
+
+  def device_class_from(type)
+    DEVICE_CLASSES.fetch(type, Device)
   end
 
   def device_params

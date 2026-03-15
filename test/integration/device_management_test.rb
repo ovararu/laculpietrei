@@ -148,7 +148,7 @@ class DeviceManagementTest < ActionDispatch::IntegrationTest
   end
 
   test "delete one device does not affect others" do
-    names_before = Device.pluck(:name) - [devices(:camera_entrance).name]
+    names_before = Device.pluck(:name) - [ devices(:camera_entrance).name ]
     delete device_path(devices(:camera_entrance))
     names_after = Device.pluck(:name)
     assert_equal names_before.sort, names_after.sort
