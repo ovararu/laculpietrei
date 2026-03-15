@@ -45,6 +45,11 @@ class DevicesController < ApplicationController
   end
 
   def update
+    new_type = device_params[:type]
+    if new_type.present? && Device::TYPES.include?(new_type) && @device.type != new_type
+      @device = @device.becomes(new_type.constantize)
+      @device.type = new_type
+    end
     if @device.update(device_params.except(:type))
       redirect_to @device, notice: "Device was successfully updated."
     else

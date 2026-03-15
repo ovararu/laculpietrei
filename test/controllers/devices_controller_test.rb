@@ -298,10 +298,10 @@ class DevicesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Device was successfully updated.", flash[:notice]
   end
 
-  test "update does not change device type" do
-    original_type = devices(:camera_entrance).type
+  test "update can change device type" do
+    id = devices(:camera_entrance).id
     patch device_path(devices(:camera_entrance)), params: { device: { type: "Server", name: "Test" } }
-    assert_equal original_type, devices(:camera_entrance).reload.type
+    assert_equal "Server", Device.find(id).type
   end
 
   test "update with blank name re-renders edit" do
