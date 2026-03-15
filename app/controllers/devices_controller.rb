@@ -67,7 +67,8 @@ class DevicesController < ApplicationController
     params.expect(device: [
       :type, :name, :brand, :model_number, :serial_number,
       :ip_address, :mac_address, :location, :status,
-      :notes, :purchased_at, :warranty_expires_at, :parent_device_id
+      :notes, :purchased_at, :warranty_expires_at, :parent_device_id,
+      :username, :password
     ])
   end
 end

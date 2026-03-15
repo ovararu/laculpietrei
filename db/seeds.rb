@@ -10,7 +10,7 @@ Camera.find_or_create_by!(name: "Camera - Entrance") do |d|
   d.status = "active"
   d.purchased_at = "2023-06-15"
   d.warranty_expires_at = "2026-06-15"
-end
+end.update!(username: "octav", password: "password")
 
 Camera.find_or_create_by!(name: "Camera - Parking") do |d|
   d.brand = "Dahua"
@@ -22,7 +22,7 @@ Camera.find_or_create_by!(name: "Camera - Parking") do |d|
   d.status = "active"
   d.purchased_at = "2023-06-15"
   d.warranty_expires_at = "2026-06-15"
-end
+end.update!(username: "octav", password: "password")
 
 Switch.find_or_create_by!(name: "Core Switch") do |d|
   d.brand = "Cisco"
@@ -34,7 +34,7 @@ Switch.find_or_create_by!(name: "Core Switch") do |d|
   d.status = "active"
   d.purchased_at = "2022-01-10"
   d.warranty_expires_at = "2025-01-10"
-end
+end.update!(username: "octav", password: "password")
 
 Switch.find_or_create_by!(name: "Floor 2 Switch") do |d|
   d.brand = "TP-Link"
@@ -45,7 +45,7 @@ Switch.find_or_create_by!(name: "Floor 2 Switch") do |d|
   d.location = "Floor 2, Rack Cabinet"
   d.status = "maintenance"
   d.purchased_at = "2021-05-20"
-end
+end.update!(username: "octav", password: "password")
 
 Router.find_or_create_by!(name: "Main Router") do |d|
   d.brand = "MikroTik"
@@ -57,7 +57,7 @@ Router.find_or_create_by!(name: "Main Router") do |d|
   d.status = "active"
   d.purchased_at = "2022-01-10"
   d.warranty_expires_at = "2025-01-10"
-end
+end.update!(username: "octav", password: "password")
 
 Pc.find_or_create_by!(name: "Reception PC") do |d|
   d.brand = "Dell"
@@ -69,7 +69,7 @@ Pc.find_or_create_by!(name: "Reception PC") do |d|
   d.status = "active"
   d.purchased_at = "2022-09-01"
   d.warranty_expires_at = "2025-09-01"
-end
+end.update!(username: "octav", password: "password")
 
 Pc.find_or_create_by!(name: "Accounting PC") do |d|
   d.brand = "HP"
@@ -81,7 +81,7 @@ Pc.find_or_create_by!(name: "Accounting PC") do |d|
   d.status = "inactive"
   d.purchased_at = "2020-03-15"
   d.notes = "Scheduled for replacement"
-end
+end.update!(username: "octav", password: "password")
 
 Server.find_or_create_by!(name: "File Server") do |d|
   d.brand = "Dell"
@@ -93,7 +93,7 @@ Server.find_or_create_by!(name: "File Server") do |d|
   d.status = "active"
   d.purchased_at = "2023-01-20"
   d.warranty_expires_at = "2028-01-20"
-end
+end.update!(username: "octav", password: "password")
 
 # Wire up topology connections
 # Main Router (top-level, no parent)
