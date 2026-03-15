@@ -1,0 +1,47 @@
+<% content_for :title, "Intervention — #{@intervention.device.name}" %>
+
+<div class="max-w-2xl">
+  <div class="mb-6">
+    <%= link_to "← Back to #{@intervention.device.name}", @intervention.device, class: "text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+          <%= @intervention.intervened_at.strftime("%d %b %Y") %>
+        </h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          <%= link_to @intervention.device.name, @intervention.device, class: "hover:text-blue-600 dark:hover:text-blue-400" %>
+        </p>
+      </div>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= @intervention.type_color %>">
+        <%= @intervention.type_label %>
+      </span>
+    </div>
+
+    <dl class="divide-y divide-gray-100 dark:divide-gray-700">
+      <div class="px-6 py-4">
+        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Description / Work Done</dt>
+        <dd class="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @intervention.description %></dd>
+      </div>
+      <% if @intervention.parts_replaced.present? %>
+        <div class="px-6 py-4">
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Parts Replaced</dt>
+          <dd class="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap"><%= @intervention.parts_replaced %></dd>
+        </div>
+      <% end %>
+      <div class="px-6 py-3 flex">
+        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 w-40 shrink-0">Recorded</dt>
+        <dd class="text-sm text-gray-500 dark:text-gray-400"><%= @intervention.created_at.strftime("%d %b %Y %H:%M") %></dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="flex gap-3 mt-4">
+    <%= link_to "Edit", edit_intervention_path(@intervention), class: "bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors" %>
+    <%= button_to "Delete", intervention_path(@intervention), method: :delete,
+      class: "bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 text-sm font-medium px-4 py-2 rounded-lg transition-colors border-0 cursor-pointer",
+      data: { turbo_confirm: "Delete this intervention?" } %>
+  </div>
+</div>

@@ -17,6 +17,7 @@ class Device < ApplicationRecord
 
   belongs_to :parent_device, class_name: "Device", optional: true
   has_many :child_devices, class_name: "Device", foreign_key: :parent_device_id, dependent: :nullify
+  has_many :interventions, dependent: :destroy
 
   validates :name, presence: true
   validates :type, inclusion: { in: TYPES }

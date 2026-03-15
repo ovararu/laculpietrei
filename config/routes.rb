@@ -10,7 +10,10 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   root "devices#index"
-  resources :devices
+  resources :devices do
+    resources :interventions, only: [ :new, :create ]
+  end
+  resources :interventions
 
   get "dashboard", to: "dashboard#index"
   get "topology", to: "topology#index"

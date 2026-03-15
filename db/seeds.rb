@@ -117,3 +117,40 @@ Camera.find_by!(name: "Camera - Parking").update!(parent_device: core_switch)
 Pc.find_by!(name: "Reception PC").update!(parent_device: core_switch)
 Server.find_by!(name: "File Server").update!(parent_device: core_switch)
 Pc.find_by!(name: "Accounting PC").update!(parent_device: floor_switch)
+
+# Sample interventions
+cam_entrance = Camera.find_by!(name: "Camera - Entrance")
+floor_switch_dev = Switch.find_by!(name: "Floor 2 Switch")
+server = Server.find_by!(name: "File Server")
+reception_pc = Pc.find_by!(name: "Reception PC")
+
+Intervention.find_or_create_by!(device: cam_entrance, intervened_at: "2025-11-10", intervention_type: "breakdown") do |i|
+  i.description = "Camera stopped recording after power outage. Reset power supply and reconfigured NVR stream."
+  i.parts_replaced = "Power supply unit"
+end
+
+Intervention.find_or_create_by!(device: cam_entrance, intervened_at: "2025-08-15", intervention_type: "maintenance") do |i|
+  i.description = "Cleaned lens, checked mounting bracket, verified motion detection zones. All OK."
+end
+
+Intervention.find_or_create_by!(device: floor_switch_dev, intervened_at: "2025-12-01", intervention_type: "configuration") do |i|
+  i.description = "Configured VLAN 20 for new IP phones. Updated port assignments and trunk uplinks."
+end
+
+Intervention.find_or_create_by!(device: floor_switch_dev, intervened_at: "2025-09-05", intervention_type: "breakdown") do |i|
+  i.description = "Port 8 failed — no link light. Replaced SFP module."
+  i.parts_replaced = "SFP 1G module (TP-Link TL-SM311LS)"
+end
+
+Intervention.find_or_create_by!(device: server, intervened_at: "2025-10-20", intervention_type: "upgrade") do |i|
+  i.description = "Upgraded RAM from 32GB to 64GB. Extended OS partition. Updated firmware to latest version."
+  i.parts_replaced = "2x 16GB DDR4 ECC RDIMM"
+end
+
+Intervention.find_or_create_by!(device: server, intervened_at: "2025-07-14", intervention_type: "maintenance") do |i|
+  i.description = "Annual maintenance: cleaned dust filters, checked RAID health (all disks OK), verified backup schedule."
+end
+
+Intervention.find_or_create_by!(device: reception_pc, intervened_at: "2026-01-08", intervention_type: "breakdown") do |i|
+  i.description = "PC would not boot — corrupted Windows profile. Repaired profile, restored user data from backup."
+end

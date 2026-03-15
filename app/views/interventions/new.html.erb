@@ -1,0 +1,14 @@
+<% content_for :title, "New Intervention" %>
+
+<div class="max-w-2xl">
+  <div class="mb-6">
+    <%= link_to (@device ? "← Back to #{@device.name}" : "← Back to Interventions"),
+      (@device ? device_path(@device) : interventions_path),
+      class: "text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 px-6 py-6">
+    <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Record Intervention</h1>
+    <%= render "form", intervention: @intervention, device: @device %>
+  </div>
+</div>
