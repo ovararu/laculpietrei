@@ -15,14 +15,14 @@ export default class extends Controller {
     const { nodes, edges } = await response.json()
 
     this.physicsEnabled = localStorage.getItem(PHYSICS_KEY) !== "false"
+    const isDark = document.documentElement.classList.contains("dark")
 
     const savedPositions = this.loadPositions()
-    if (savedPositions) {
-      nodes.forEach(node => {
-        const pos = savedPositions[node.id]
-        if (pos) { node.x = pos.x; node.y = pos.y }
-      })
-    }
+    nodes.forEach(node => {
+      node.font = { size: 13, color: isDark ? "#F9FAFB" : "#111827" }
+      const pos = savedPositions?.[node.id]
+      if (pos) { node.x = pos.x; node.y = pos.y }
+    })
 
     const options = {
       physics: {
@@ -31,7 +31,7 @@ export default class extends Controller {
         barnesHut: { gravitationalConstant: -8000, springLength: 140, springConstant: 0.04 }
       },
       interaction: { hover: true, tooltipDelay: 100 },
-      nodes: { size: 22, font: { size: 12 } },
+      nodes: { size: 22 },
       edges: { width: 1.5, smooth: { type: "cubicBezier", forceDirection: "vertical", roundness: 0.4 } }
     }
 
