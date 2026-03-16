@@ -1,5 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
+const POSITIONS_KEY = "topology_positions"
+const PHYSICS_KEY   = "topology_physics"
+
 export default class extends Controller {
   static targets = ["canvas"]
   static values  = { url: String }
@@ -11,9 +14,19 @@ export default class extends Controller {
     const response = await fetch(this.urlValue, { headers: { "Accept": "application/json" } })
     const { nodes, edges } = await response.json()
 
+    this.physicsEnabled = localStorage.getItem(PHYSICS_KEY) !== "false"
+
+    const savedPositions = this.loadPositions()
+    if (savedPositions) {
+      nodes.forEach(node => {
+        const pos = savedPositions[node.id]
+        if (pos) { node.x = pos.x; node.y = pos.y }
+      })
+    }
+
     const options = {
       physics: {
-        enabled: true,
+        enabled: this.physicsEnabled,
         solver: "barnesHut",
         barnesHut: { gravitationalConstant: -8000, springLength: 140, springConstant: 0.04 }
       },
@@ -24,6 +37,9 @@ export default class extends Controller {
 
     this.network = new Network(this.canvasTarget, { nodes, edges }, options)
 
+    // Save only when user explicitly drags — never on auto-stabilize
+    this.network.on("dragEnd", () => this.savePositions())
+
     document.getElementById("topology-fit")?.addEventListener("click", () => {
       this.network.fit({ animation: { duration: 500, easingFunction: "easeInOutQuad" } })
     })
@@ -31,9 +47,24 @@ export default class extends Controller {
     document.getElementById("topology-physics")?.addEventListener("click", () => {
       this.physicsEnabled = !this.physicsEnabled
       this.network.setOptions({ physics: { enabled: this.physicsEnabled } })
+      // When turning physics off, capture and save the current positions immediately
+      if (!this.physicsEnabled) {
+        this.savePositions()
+      }
+      localStorage.setItem(PHYSICS_KEY, this.physicsEnabled)
     })
+  }
 
-    this.physicsEnabled = true
+  savePositions() {
+    const positions = this.network.getPositions()
+    localStorage.setItem(POSITIONS_KEY, JSON.stringify(positions))
+  }
+
+  loadPositions() {
+    try {
+      const raw = localStorage.getItem(POSITIONS_KEY)
+      return raw ? JSON.parse(raw) : null
+    } catch { return null }
   }
 
   disconnect() {
