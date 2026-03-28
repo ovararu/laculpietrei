@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MikroTik — RouterOS v7 Device List</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --surface: #13161a;
+    --surface2: #1a1e24;
+    --border: #252b34;
+    --accent: #e8b32a;
+    --accent2: #3a9efd;
+    --wifi: #22c55e;
+    --nowifi: #475569;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --wifi5: #3b82f6;
+    --wifi6: #22c55e;
+    --wifi7: #f59e0b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  header {
+    padding: 40px 32px 24px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .logo-box {
+    background: var(--accent);
+    color: #000;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 11px;
+    padding: 4px 8px;
+    letter-spacing: 2px;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .controls {
+    padding: 16px 32px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .search-box {
+    flex: 1;
+    min-width: 200px;
+    max-width: 340px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .search-box::placeholder { color: var(--muted); }
+
+  .filter-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+
+  .stats {
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .stats span { color: var(--accent); }
+
+  .table-wrap {
+    padding: 0 32px 40px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: var(--surface);
+    padding: 12px 14px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  thead th:hover { color: var(--accent); }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  tbody tr:hover { background: var(--surface); }
+  tbody tr.hidden { display: none; }
+
+  td {
+    padding: 11px 14px;
+    vertical-align: middle;
+    color: var(--text);
+  }
+
+  .model-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 12px;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .product-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .badge-wifi7 { background: rgba(245,158,11,0.15); color: var(--wifi7); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-wifi6 { background: rgba(34,197,94,0.12); color: var(--wifi6); border: 1px solid rgba(34,197,94,0.25); }
+  .badge-wifi5 { background: rgba(59,130,246,0.12); color: var(--wifi5); border: 1px solid rgba(59,130,246,0.25); }
+  .badge-none  { background: rgba(71,85,105,0.15); color: var(--nowifi); border: 1px solid rgba(71,85,105,0.2); }
+
+  .badge-cat { background: rgba(58,158,253,0.1); color: var(--accent2); border: 1px solid rgba(58,158,253,0.2); }
+  .badge-lte { background: rgba(168,85,247,0.1); color: #a855f7; border: 1px solid rgba(168,85,247,0.2); }
+
+  .dot-wifi { color: var(--wifi6); }
+  .dot-none { color: var(--nowifi); }
+
+  .ram { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+  .eth { font-family: 'IBM Plex Mono', monospace; font-size: 12px; }
+
+  .category-row td {
+    background: var(--surface2);
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-top: 2px solid var(--border);
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 60px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    header, .controls, .table-wrap { padding-left: 16px; padding-right: 16px; }
+    h1 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-row">
+    <div class="logo-box">MIKROTIK</div>
+    <div class="logo-box" style="background:#1a1e24;color:var(--accent);border:1px solid var(--accent);">RouterOS v7</div>
+  </div>
+  <h1>Lista completă dispozitive <span>RouterOS v7</span></h1>
+  <div class="subtitle">// Toate modelele compatibile · WireGuard nativ pe toate</div>
+</header>
+
+<div class="controls">
+  <input class="search-box" type="text" id="searchInput" placeholder="Caută model, cod produs...">
+  <button class="filter-btn active" data-filter="all">Toate</button>
+  <button class="filter-btn" data-filter="wifi">Cu WiFi</button>
+  <button class="filter-btn" data-filter="nowifi">Fără WiFi</button>
+  <button class="filter-btn" data-filter="wifi6">WiFi 6</button>
+  <button class="filter-btn" data-filter="wifi7">WiFi 7</button>
+  <div class="stats">Afișate: <span id="countVisible">0</span> / <span id="countTotal">0</span></div>
+</div>
+
+<div class="table-wrap">
+<table id="deviceTable">
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>WiFi</th>
+      <th>Bandă WiFi</th>
+      <th>CPU / Cores</th>
+      <th>RAM</th>
+      <th>Porturi Ethernet</th>
+      <th>Extras</th>
+      <th>Categorie</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody">
+
+    <!-- ===== HOME / OFFICE ROUTERS CU WIFI ===== -->
+    <tr class="category-row"><td colspan="8">▸ Home / Office — Cu WiFi</td></tr>
+
+    <tr data-wifi="wifi7" data-cat="home">
+      <td><div class="model-name">hAP be³ Media</div><div class="product-code">BE7G-5HPbe3D5HPbe3D2HPbe3D</div></td>
+      <td><span class="badge badge-wifi7">✓ WiFi 7</span></td>
+      <td>2.4 / 5 / 6 GHz (tri-band)</td>
+      <td class="ram">Quad-core ARM64<br>1.5 GHz</td>
+      <td class="ram">1 GB</td>
+      <td class="eth">5× 2.5G ETH</td>
+      <td><span class="badge badge-cat">Bluetooth 5.4</span> <span class="badge badge-cat">Thread/Matter</span></td>
+      <td>Home</td>
+    </tr>
+
+    <tr data-wifi="wifi6" data-cat="home">
+      <td><div class="model-name">hAP ax³</div><div class="product-code">C53UiG+5HPaxD2HPaxD</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Quad-core ARM<br>1.8 GHz</td>
+      <td class="ram">1 GB</td>
+      <td class="eth">4× GbE + 1× 2.5G</td>
+      <td><span class="badge badge-cat">USB 3.0</span> <span class="badge badge-cat">WPA3</span></td>
+      <td>Home</td>
+    </tr>
+
+    <tr data-wifi="wifi6" data-cat="home">
+      <td><div class="model-name">hAP ax²</div><div class="product-code">C52iG-5HaxD2HaxD-TC</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Quad-core ARM<br>864 MHz</td>
+      <td class="ram">1 GB</td>
+      <td class="eth">5× GbE</td>
+      <td><span class="badge badge-cat">PoE-in/out</span> <span class="badge badge-cat">WPA3</span></td>
+      <td>Home</td>
+    </tr>
+
+    <tr data-wifi="wifi6" data-cat="home">
+      <td><div class="model-name">hAP ax S</div><div class="product-code">C53UiG+5HPaxD2HPaxD-S</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Dual-core ARM<br>800 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">5× GbE + 2.5G SFP</td>
+      <td><span class="badge badge-cat">Triple-chain 5GHz</span> <span class="badge badge-cat">USB</span></td>
+      <td>Home</td>
+    </tr>
+
+    <tr data-wifi="wifi6" data-cat="home">
+      <td><div class="model-name">hAP ax lite</div><div class="product-code">L41G-2axD</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 GHz only</td>
+      <td class="ram">Dual-core ARM<br>800 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">4× GbE</td>
+      <td><span class="badge badge-cat">Budget</span> <span class="badge badge-cat">Compact</span></td>
+      <td>Home</td>
+    </tr>
+
+    <tr data-wifi="wifi6" data-cat="home">
+      <td><div class="model-name">hAP ax lite LTE6</div><div class="product-code">L41G-2axD&amp;FG621-EA</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 GHz only</td>
+      <td class="ram">Dual-core ARM<br>800 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">4× GbE</td>
+      <td><span class="badge badge-lte">LTE6</span> <span class="badge badge-cat">Budget</span></td>
+      <td>Home + LTE</td>
+    </tr>
+
+    <tr data-wifi="wifi5" data-cat="home">
+      <td><div class="model-name">hAP ac³</div><div class="product-code">RBD53iG-5HacD2HnD</div></td>
+      <td><span class="badge badge-wifi5">✓ WiFi 5</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Quad-core ARM<br>716 MHz</td>
+      <td class="ram">512 MB</td>
+      <td class="eth">5× GbE</td>
+      <td><span class="badge badge-cat">PoE-out</span> <span class="badge badge-cat">USB</span></td>
+      <td>Home</td>
+    </tr>
+
+    <tr data-wifi="wifi5" data-cat="home">
+      <td><div class="model-name">hAP ac²</div><div class="product-code">RBD52G-5HacD2HnD-TC</div></td>
+      <td><span class="badge badge-wifi5">✓ WiFi 5</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Dual-core ARM<br>716 MHz</td>
+      <td class="ram">128 MB</td>
+      <td class="eth">5× GbE</td>
+      <td><span class="badge badge-cat">PoE-in/out</span></td>
+      <td>Home</td>
+    </tr>
+
+    <tr data-wifi="wifi6" data-cat="home">
+      <td><div class="model-name">L009UiGS-2HaxD-IN</div><div class="product-code">L009UiGS-2HaxD-IN</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 GHz only</td>
+      <td class="ram">Dual-core ARM<br>800 MHz</td>
+      <td class="ram">512 MB</td>
+      <td class="eth">8× GbE + 2.5G SFP</td>
+      <td><span class="badge badge-cat">USB 3.0</span> <span class="badge badge-cat">PoE-in</span></td>
+      <td>SOHO</td>
+    </tr>
+
+    <!-- ===== LTE / CHATEAU CU WIFI ===== -->
+    <tr class="category-row"><td colspan="8">▸ Chateau — Home LTE Cu WiFi</td></tr>
+
+    <tr data-wifi="wifi6" data-cat="lte">
+      <td><div class="model-name">Chateau LTE7 ax</div><div class="product-code">D53G-5HaxD2HaxD+RG502Q-EA</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Quad-core ARM<br>716 MHz</td>
+      <td class="ram">512 MB</td>
+      <td class="eth">5× GbE</td>
+      <td><span class="badge badge-lte">LTE7 Cat7</span> <span class="badge badge-cat">WPA3</span></td>
+      <td>Home + LTE</td>
+    </tr>
+
+    <tr data-wifi="wifi6" data-cat="lte">
+      <td><div class="model-name">Chateau LTE6 ax</div><div class="product-code">D53G-5HaxD2HaxD+FG621-EA</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Quad-core ARM<br>716 MHz</td>
+      <td class="ram">512 MB</td>
+      <td class="eth">5× GbE</td>
+      <td><span class="badge badge-lte">LTE6 Cat6</span> <span class="badge badge-cat">WPA3</span></td>
+      <td>Home + LTE</td>
+    </tr>
+
+    <!-- ===== ACCESS POINTS CU WIFI ===== -->
+    <tr class="category-row"><td colspan="8">▸ Access Points — Cu WiFi</td></tr>
+
+    <tr data-wifi="wifi6" data-cat="ap">
+      <td><div class="model-name">cAP ax</div><div class="product-code">cAPGi-5HaxD2HaxD</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Quad-core ARM<br>716 MHz</td>
+      <td class="ram">1 GB</td>
+      <td class="eth">2× GbE</td>
+      <td><span class="badge badge-cat">Ceiling mount</span> <span class="badge badge-cat">CAPsMAN</span></td>
+      <td>Access Point</td>
+    </tr>
+
+    <tr data-wifi="wifi5" data-cat="ap">
+      <td><div class="model-name">cAP ac</div><div class="product-code">cAP ac</div></td>
+      <td><span class="badge badge-wifi5">✓ WiFi 5</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Dual-core ARM<br>716 MHz</td>
+      <td class="ram">128 MB</td>
+      <td class="eth">2× GbE</td>
+      <td><span class="badge badge-cat">Ceiling mount</span> <span class="badge badge-cat">CAPsMAN</span></td>
+      <td>Access Point</td>
+    </tr>
+
+    <tr data-wifi="wifi5" data-cat="ap">
+      <td><div class="model-name">cAP XL ac</div><div class="product-code">RBcAPGi-5HacD2HnD-XL</div></td>
+      <td><span class="badge badge-wifi5">✓ WiFi 5</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Dual-core ARM<br>716 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">2× GbE</td>
+      <td><span class="badge badge-cat">Ceiling / Wall</span> <span class="badge badge-cat">High-gain</span></td>
+      <td>Access Point</td>
+    </tr>
+
+    <tr data-wifi="wifi6" data-cat="ap">
+      <td><div class="model-name">wAP ax</div><div class="product-code">wAPG-5HaxD2HaxD</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Dual-core ARM<br>800 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">2× GbE</td>
+      <td><span class="badge badge-cat">IP54</span> <span class="badge badge-cat">Outdoor</span></td>
+      <td>AP Outdoor</td>
+    </tr>
+
+    <tr data-wifi="wifi6" data-cat="ap">
+      <td><div class="model-name">wAP ax LTE7</div><div class="product-code">wAPG-5HaxD2HaxD+RG502Q-EA</div></td>
+      <td><span class="badge badge-wifi6">✓ WiFi 6</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Dual-core ARM<br>800 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">2× GbE</td>
+      <td><span class="badge badge-lte">LTE7</span> <span class="badge badge-cat">IP66</span> <span class="badge badge-cat">Outdoor</span></td>
+      <td>AP Outdoor + LTE</td>
+    </tr>
+
+    <tr data-wifi="wifi5" data-cat="ap">
+      <td><div class="model-name">wAP ac</div><div class="product-code">RBwAPG-5HacD2HnD</div></td>
+      <td><span class="badge badge-wifi5">✓ WiFi 5</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Dual-core ARM<br>716 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">2× GbE</td>
+      <td><span class="badge badge-cat">IP54</span> <span class="badge badge-cat">Outdoor</span></td>
+      <td>AP Outdoor</td>
+    </tr>
+
+    <!-- ===== PROFESSIONAL CU WIFI ===== -->
+    <tr class="category-row"><td colspan="8">▸ Professional — Cu WiFi</td></tr>
+
+    <tr data-wifi="wifi5" data-cat="pro">
+      <td><div class="model-name">RB4011iGS+5HacQ2HnD-IN</div><div class="product-code">RB4011iGS+5HacQ2HnD-IN</div></td>
+      <td><span class="badge badge-wifi5">✓ WiFi 5</span></td>
+      <td>2.4 / 5 GHz (4×4 MIMO)</td>
+      <td class="ram">Quad-core ARM<br>1.4 GHz</td>
+      <td class="ram">1 GB</td>
+      <td class="eth">10× GbE + SFP+</td>
+      <td><span class="badge badge-cat">10G SFP+</span> <span class="badge badge-cat">Desktop</span></td>
+      <td>Professional</td>
+    </tr>
+
+    <tr data-wifi="wifi5" data-cat="pro">
+      <td><div class="model-name">Audience</div><div class="product-code">RBD25G-5HPacQD2HPnD</div></td>
+      <td><span class="badge badge-wifi5">✓ WiFi 5</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Quad-core ARM<br>716 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">2× GbE</td>
+      <td><span class="badge badge-cat">Outdoor</span> <span class="badge badge-cat">High-gain</span></td>
+      <td>Outdoor Pro</td>
+    </tr>
+
+    <tr data-wifi="wifi5" data-cat="pro">
+      <td><div class="model-name">Audience LTE6 kit</div><div class="product-code">RBD25GR-5HPacQD2HPnD</div></td>
+      <td><span class="badge badge-wifi5">✓ WiFi 5</span></td>
+      <td>2.4 / 5 GHz (dual-band)</td>
+      <td class="ram">Quad-core ARM<br>716 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">2× GbE</td>
+      <td><span class="badge badge-lte">LTE6</span> <span class="badge badge-cat">Outdoor</span></td>
+      <td>Outdoor Pro + LTE</td>
+    </tr>
+
+    <!-- ===== FĂRĂ WIFI - ETHERNET ROUTERS ===== -->
+    <tr class="category-row"><td colspan="8">▸ Home / SOHO — Fără WiFi</td></tr>
+
+    <tr data-wifi="nowifi" data-cat="eth">
+      <td><div class="model-name">hEX (2025 refresh)</div><div class="product-code">RB750Gr3 / E50UG</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Dual-core ARM<br>~880 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">5× GbE</td>
+      <td><span class="badge badge-cat">Budget</span></td>
+      <td>Home Wired</td>
+    </tr>
+
+    <tr data-wifi="nowifi" data-cat="eth">
+      <td><div class="model-name">hEX S (2025)</div><div class="product-code">E60iUGS</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Dual-core ARM<br>~880 MHz</td>
+      <td class="ram">256 MB</td>
+      <td class="eth">5× GbE + 2.5G SFP</td>
+      <td><span class="badge badge-cat">PoE-out</span> <span class="badge badge-cat">USB</span></td>
+      <td>Home Wired</td>
+    </tr>
+
+    <tr data-wifi="nowifi" data-cat="eth">
+      <td><div class="model-name">L009UiGS-RM</div><div class="product-code">L009UiGS-RM</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Dual-core ARM<br>800 MHz</td>
+      <td class="ram">512 MB</td>
+      <td class="eth">8× GbE + 2.5G SFP</td>
+      <td><span class="badge badge-cat">1U Rack</span> <span class="badge badge-cat">USB 3.0</span></td>
+      <td>SOHO Wired</td>
+    </tr>
+
+    <!-- ===== FĂRĂ WIFI - PROFESSIONAL ===== -->
+    <tr class="category-row"><td colspan="8">▸ Professional / Enterprise — Fără WiFi</td></tr>
+
+    <tr data-wifi="nowifi" data-cat="eth">
+      <td><div class="model-name">RB4011iGS+RM</div><div class="product-code">RB4011iGS+RM</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Quad-core ARM<br>1.4 GHz</td>
+      <td class="ram">1 GB</td>
+      <td class="eth">10× GbE + SFP+</td>
+      <td><span class="badge badge-cat">1U Rack</span> <span class="badge badge-cat">10G SFP+</span></td>
+      <td>Professional</td>
+    </tr>
+
+    <tr data-wifi="nowifi" data-cat="eth">
+      <td><div class="model-name">RB5009UG+S+IN</div><div class="product-code">RB5009UG+S+IN</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Quad-core ARMv8<br>1.4 GHz</td>
+      <td class="ram">1 GB</td>
+      <td class="eth">7× GbE + 1× 2.5G + 10G SFP+</td>
+      <td><span class="badge badge-cat">USB 3.0</span> <span class="badge badge-cat">Compact</span></td>
+      <td>Professional</td>
+    </tr>
+
+    <tr data-wifi="nowifi" data-cat="eth">
+      <td><div class="model-name">RB5009UPr+S+IN</div><div class="product-code">RB5009UPr+S+IN</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Quad-core ARMv8<br>1.4 GHz</td>
+      <td class="ram">1 GB</td>
+      <td class="eth">7× GbE + 1× 2.5G + 10G SFP+</td>
+      <td><span class="badge badge-cat">PoE-out ×8</span> <span class="badge badge-cat">Dual PSU</span></td>
+      <td>Professional</td>
+    </tr>
+
+    <tr data-wifi="nowifi" data-cat="eth">
+      <td><div class="model-name">RB5009UPr+S+OUT</div><div class="product-code">RB5009UPr+S+OUT</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Quad-core ARMv8<br>1.4 GHz</td>
+      <td class="ram">1 GB</td>
+      <td class="eth">7× GbE + 1× 2.5G + 10G SFP+</td>
+      <td><span class="badge badge-cat">IP66</span> <span class="badge badge-cat">Outdoor</span></td>
+      <td>Professional</td>
+    </tr>
+
+    <!-- ===== CCR ===== -->
+    <tr class="category-row"><td colspan="8">▸ Cloud Core Routers (CCR) — Fără WiFi</td></tr>
+
+    <tr data-wifi="nowifi" data-cat="ccr">
+      <td><div class="model-name">CCR2004-16G-2S+</div><div class="product-code">CCR2004-16G-2S+</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Quad-core ARM64<br>1.7 GHz</td>
+      <td class="ram">4 GB</td>
+      <td class="eth">16× GbE + 2× SFP+</td>
+      <td><span class="badge badge-cat">1U Rack</span> <span class="badge badge-cat">Dual PSU</span></td>
+      <td>CCR / ISP</td>
+    </tr>
+
+    <tr data-wifi="nowifi" data-cat="ccr">
+      <td><div class="model-name">CCR2004-16G-2S+PC</div><div class="product-code">CCR2004-16G-2S+PC</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Quad-core ARM64<br>1.2 GHz</td>
+      <td class="ram">4 GB</td>
+      <td class="eth">16× GbE + 2× SFP+</td>
+      <td><span class="badge badge-cat">Pasiv (silențios)</span></td>
+      <td>CCR / ISP</td>
+    </tr>
+
+    <tr data-wifi="nowifi" data-cat="ccr">
+      <td><div class="model-name">CCR2004-1G-12S+2XS</div><div class="product-code">CCR2004-1G-12S+2XS</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">Quad-core ARM64<br>1.7 GHz</td>
+      <td class="ram">4 GB ECC</td>
+      <td class="eth">1× GbE + 12× SFP+ + 2× SFP28</td>
+      <td><span class="badge badge-cat">25G</span> <span class="badge badge-cat">miniPCIe</span></td>
+      <td>CCR / ISP</td>
+    </tr>
+
+    <tr data-wifi="nowifi" data-cat="ccr">
+      <td><div class="model-name">CCR2116-12G-4S+</div><div class="product-code">CCR2116-12G-4S+</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">16-core ARM64<br>2 GHz</td>
+      <td class="ram">16 GB</td>
+      <td class="eth">12× GbE + 4× SFP+</td>
+      <td><span class="badge badge-cat">M.2 PCIe</span> <span class="badge badge-cat">Dual PSU</span></td>
+      <td>CCR / ISP</td>
+    </tr>
+
+    <tr data-wifi="nowifi" data-cat="ccr">
+      <td><div class="model-name">CCR2216-1G-12XS-2XQ</div><div class="product-code">CCR2216-1G-12XS-2XQ</div></td>
+      <td><span class="badge badge-none">— Fără WiFi</span></td>
+      <td>—</td>
+      <td class="ram">16-core ARM64<br>2 GHz</td>
+      <td class="ram">16 GB</td>
+      <td class="eth">1× GbE + 12× SFP28 + 2× QSFP28</td>
+      <td><span class="badge badge-cat">100G</span> <span class="badge badge-cat">L3 HW Offload</span></td>
+      <td>CCR Flagship</td>
+    </tr>
+
+  </tbody>
+</table>
+<div class="no-results" id="noResults">// Nu s-au găsit rezultate</div>
+</div>
+
+<script>
+  const rows = Array.from(document.querySelectorAll('#tableBody tr:not(.category-row)'));
+  const catRows = Array.from(document.querySelectorAll('.category-row'));
+  const searchInput = document.getElementById('searchInput');
+  const countVisible = document.getElementById('countVisible');
+  const countTotal = document.getElementById('countTotal');
+  const noResults = document.getElementById('noResults');
+  let currentFilter = 'all';
+
+  countTotal.textContent = rows.length;
+
+  function updateTable() {
+    const q = searchInput.value.toLowerCase();
+    let vis = 0;
+
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const wifiAttr = row.dataset.wifi || '';
+      let show = true;
+
+      if (q && !text.includes(q)) show = false;
+
+      if (currentFilter === 'wifi' && wifiAttr === 'nowifi') show = false;
+      if (currentFilter === 'nowifi' && wifiAttr !== 'nowifi') show = false;
+      if (currentFilter === 'wifi6' && wifiAttr !== 'wifi6') show = false;
+      if (currentFilter === 'wifi7' && wifiAttr !== 'wifi7') show = false;
+
+      row.classList.toggle('hidden', !show);
+      if (show) vis++;
+    });
+
+    // Show/hide category rows
+    catRows.forEach(cr => {
+      let nextSibling = cr.nextElementSibling;
+      let hasVisible = false;
+      while (nextSibling && !nextSibling.classList.contains('category-row')) {
+        if (!nextSibling.classList.contains('hidden')) hasVisible = true;
+        nextSibling = nextSibling.nextElementSibling;
+      }
+      cr.classList.toggle('hidden', !hasVisible);
+    });
+
+    countVisible.textContent = vis;
+    noResults.style.display = vis === 0 ? 'block' : 'none';
+  }
+
+  searchInput.addEventListener('input', updateTable);
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      updateTable();
+    });
+  });
+
+  updateTable();
+</script>
+</body>
+</html>
