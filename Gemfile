@@ -68,4 +68,4 @@ end
 gem "tailwindcss-rails", "~> 4.4"
 
 gem "caxlsx", "~> 4.4"
-gem "caxlsx_rails", "~> 0.6.4"
+gem "caxlsx_rails", "~> 0.7.1"
